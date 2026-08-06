@@ -116,11 +116,11 @@ st.caption(f" Difference: {abs(binomial_price - bs_price):.4f}")
 #greeks boxes
 st.divider()
 g1, g2, g3, g4, g5 = st.columns(5)
-g1.metric("Delta", f"{greeks['delta']:.4f}")
-g2.metric("Gamma", f"{greeks['gamma']:.4f}")
-g3.metric("vega", f"{greeks['vega']:.4f}")
-g4.metric("Theta", f"{greeks['theta']:.4f}")
-g5.metric("Rho", f"{greeks['rho']:.4f}")
+g1.metric("Delta", f"{greek_values['delta']:.4f}")
+g2.metric("Gamma", f"{greek_values['gamma']:.4f}")
+g3.metric("vega", f"{greek_values['vega']:.4f}")
+g4.metric("Theta", f"{greek_values['theta']:.4f}")
+g5.metric("Rho", f"{greek_values['rho']:.4f}")
 
 st.devider()
 
@@ -178,7 +178,7 @@ with tab2:
     st.write("Observation: As the number of steps increases, the Binoial Option Price converges towards the continuous Black Scholes Price.")
 
     step_range = list(range(1, 101))
-    binomial_prices = [binomial_lattice(K,T,S0,r,step,sd,optype)[0] for step in step_range]
+    binomial_prices = [binomial_price(K,T,S0,r,step,sd,optype)[0] for step in step_range]
 
     conv=go.Figure()
     conv.add_trace(go.Scatter(
