@@ -104,7 +104,7 @@ if optype_str == "call":
 else:
     optype = 'p'
 binomial_price, S, C = binomial_lattice (K,T,S0,r,N,sd,optype)
-bs_price = black_scholes_price(S0, K, T, r, sd, optype)
+bs_price = blacks_price(S0, K, T, r, sd, optype)
 greek_values = greeks(S0, K, T, r, sd, optype)
 
 # main panel
