@@ -145,18 +145,19 @@ with tab1:
                 hoverinfo='none'
             ))
     # add markers
-    x_nodes, y_nodes, node_text = [], [], []
+    x_nodes, y_nodes, node_text, node_labels = [], [], [], []
     for i in range(N+1):
         for j in range(i+1):
             x_nodes.append(i)
             y_nodes.append(j)
+            node_labels.append(j)
             node_text.append(f"Step {i}<br>Stock: ${S[i, j]:.2f}<br>Option:${C[i, j]:.2f}")
 
     tree.add_trace(go.Scatter(
         x=x_nodes, y=y_nodes,
         mode='markers+text',
         marker=dict(size=24, color = '#ba3ec1'),
-        text = [f"${S[i, j]:.1f}" for i in range (N+1) for j in range (i+1)],
+        text = node_labels,
         textposition = "middle center",
         textfront = dict(color = "white", size = 9),
         hoverinfo='text',
