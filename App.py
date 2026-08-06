@@ -92,10 +92,10 @@ def greeks(S0, K, T, r, sd, optype):
 #Sidebar inputs
 S0 = st.sidebar.number_input("Stock Price (S0)", value=105.0, step = 1.0)
 K = st.sidebar.number_input("Strike Price (K)", value=100.0, step = 1.0)
-T = st.sidebar.number_input("Price to Maturity (T)", value=3, step = 1.0)                             
-sd = st.sidebar.number_input("Volatility (Standard Deviation)", value=0.25, step = 1.0)
-r = st.sidebar.number_input("Risk Free Rate (r)", value=0.08, step = 1.0)
-N = st.sidebar.number_input("Amount of Steps", value=5.0, step = 1.0)
+T = st.sidebar.number_input("Price to Maturity (T)", value=0.5, step = 0.1)                             
+sd = st.sidebar.number_input("Volatility (Standard Deviation)", value=0.25, step = 0.01)
+r = st.sidebar.number_input("Risk Free Rate (r)", value=0.08, step = 0.005)
+N = st.sidebar.number_input("Amount of Steps", value=5, step = 1)
 
 optype_str = st.sidebar.selectbox("Option Type", ["Call", "Put"])
 
