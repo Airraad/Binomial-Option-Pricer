@@ -178,8 +178,8 @@ with tab1:
 with tab2:
     st.write("Observation: As the number of steps ($N$) increases, the discrete Binomial Option Price converges toward the continuous Black-Scholes price.")
 
-            if optype == 'p':
-                        st.info("For American Put options, early exercise premium causes the Binomial tree price to converge slightly above the European Black Scholes line.")
+    if optype == 'p':
+        st.info("For American Put options, early exercise premium causes the Binomial tree price to converge slightly above the European Black Scholes line.")
     step_range = list(range(1, 101))
     binomial_prices = [binomial_lattice(K, T, S0, r, step, sd, optype)[0] for step in step_range]
 
