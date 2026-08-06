@@ -144,14 +144,14 @@ with tab1:
                 showlegend=False, 
                 hoverinfo='none'
             ))
-    # add markers
+    
     x_nodes, y_nodes, node_text, node_labels = [], [], [], []
     for i in range(N+1):
         for j in range(i+1):
             x_nodes.append(i)
             y_nodes.append(j)
-            node_labels.append(j)
-            node_text.append(f"Step {i}<br>Stock: ${S[i, j]:.2f}<br>Option:${C[i, j]:.2f}")
+            node_labels.append(f"$S[i,j]:.1f}")
+            node_text.append(f"<b>Step {i}</b><br>Stock: ${S[i, j]:.2f}<br>Option:${C[i, j]:.2f}")
 
     tree.add_trace(go.Scatter(
         x=x_nodes, y=y_nodes,
@@ -161,7 +161,7 @@ with tab1:
         textposition = "middle center",
         textfont = dict(color = "white", size = 9),
         hoverinfo='text',
-        hovertext = node_text,
+        hovertext = node_hover,
         showlegend = False
     ))
 
@@ -178,6 +178,8 @@ with tab1:
 with tab2:
     st.write("Observation: As the number of steps ($N$) increases, the discrete Binomial Option Price converges toward the continuous Black-Scholes price.")
 
+            if optype == 'p':
+                        st.info("For American Put options, early exercise premium causes the Binomial tree price to converge slightly above the European Black Scholes line.")
     step_range = list(range(1, 101))
     binomial_prices = [binomial_lattice(K, T, S0, r, step, sd, optype)[0] for step in step_range]
 
