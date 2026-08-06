@@ -127,53 +127,66 @@ st.divider()
 #interactive tabs for graphics
 tab1, tab2 = st.tabs(["Binomial Lattice Graphic", "Black-Scholes Convergence Plot"])
 
-# Binomial Lattice Graphic
+# TAB 1: BINOMIAL LATTICE GRAPHIC
 with tab1:
-    st.write("Hover over any node to view stock price and option payoff.")
-
+    st.write("Hover over any node to view Stock Price ($S$) and Option Payoff ($C$).")
+    
     tree = go.Figure()
 
+    # 1. Draw connecting lines between adjacent nodes (centered layout)
     for i in range(N):
-        for j in range(i+1):
-            x_cords = [i, i+1, None, i, i+1]
-            y_cords = [j, j, None, j, j+1]
+        for j in range(i + 1):
+            y_curr = j - i / 2.0
+            
+            # Up-move line
+            y_up = (j + 1) - (i + 1) / 2.0
             tree.add_trace(go.Scatter(
-                x=x_cords, y=y_cords,
-                mode='lines',
-                line=dict(color='gray', width=1),
-                showlegend=False, 
-                hoverinfo='none'
+                x=[i, i + 1], y=[y_curr, y_up],
+                mode='lines', line=dict(color='gray', width=1),
+                showlegend=False, hoverinfo='none'
             ))
-    
+            
+            # Down-move line
+            y_down = j - (i + 1) / 2.0
+            tree.add_trace(go.Scatter(
+                x=[i, i + 1], y=[y_curr, y_down],
+                mode='lines', line=dict(color='gray', width=1),
+                showlegend=False, hoverinfo='none'
+            ))
+
+    # 2. Add node markers with labels and hover tooltips
     x_nodes, y_nodes, node_hover, node_labels = [], [], [], []
-    for i in range(N+1):
-        for j in range(i+1):
+
+    for i in range(N + 1):
+        for j in range(i + 1):
             x_nodes.append(i)
-            y_nodes.append(j)
-            node_labels.append(f"$S[i,j]:.1f")
+            # Center the node vertically around 0
+            y_nodes.append(j - i / 2.0)
+            
+            node_labels.append(f"${S[i, j]:.1f}")
             node_hover.append(f"<b>Step {i}</b><br>Stock Price: ${S[i, j]:.2f}<br>Option Value: ${C[i, j]:.2f}")
 
     tree.add_trace(go.Scatter(
-        x=x_nodes, y=y_nodes,
+        x=x_nodes,
+        y=y_nodes,
         mode='markers+text',
-        marker=dict(size=24, color = '#ba3ec1'),
-        text = node_labels,
-        textposition = "middle center",
-        textfont = dict(color = "white", size = 9),
+        marker=dict(size=28, color='#1f77b4'),
+        text=node_labels,
+        textposition="middle center",
+        textfont=dict(color="white", size=9),
         hoverinfo='text',
-        hovertext = node_hover,
-        showlegend = False
+        hovertext=node_hover,
+        showlegend=False
     ))
 
     tree.update_layout(
-        title = "Binomial Price Tree Lattice",
-        xaxis = dict(title="Time Step", tickmode='linear', dtick=1),
-        yaxis=dict(showticklabels = False),
-        height = 500,
-        margin = dict(l=20, r=20, t=40, b=20)
+        title="Binomial Price Tree Lattice",
+        xaxis=dict(title="Time Step", tickmode='linear', dtick=1, showgrid=False),
+        yaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
+        height=500,
+        margin=dict(l=20, r=20, t=40, b=20)
     )
     st.plotly_chart(tree, use_container_width=True)
-
     #convergence graph
 with tab2:
     st.write("Observation: As the number of steps ($N$) increases, the discrete Binomial Option Price converges toward the continuous Black-Scholes price.")
