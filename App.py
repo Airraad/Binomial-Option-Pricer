@@ -159,7 +159,7 @@ with tab1:
         marker=dict(size=24, color = '#ba3ec1'),
         text = node_labels,
         textposition = "middle center",
-        textfront = dict(color = "white", size = 9),
+        textfont = dict(color = "white", size = 9),
         hoverinfo='text',
         hovertext = node_text,
         showlegend = False
