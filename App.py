@@ -157,14 +157,34 @@ with tab1:
     # 2. Add node markers with labels and hover tooltips
     x_nodes, y_nodes, node_hover, node_labels = [], [], [], []
 
-    for i in range(N + 1):
-        for j in range(i + 1):
-            x_nodes.append(i)
-            # Center the node vertically around 0
-            y_nodes.append(j - i / 2.0)
-            
-            node_labels.append(f"${S[i, j]:.1f}")
-            node_hover.append(f"<b>Step {i}</b><br>Stock Price: ${S[i, j]:.2f}<br>Option Value: ${C[i, j]:.2f}")
+    node_hover = []
+
+            for i in range(N + 1):
+            for j in range(i + 1):
+                        x_nodes.append(i)
+                        y_nodes.append(j - i / 2.0)
+                        node_labels.append(f"${S[i, j]:.1f}")
+        
+        # Calculate intrinsic value at this node
+            intrinsic_val = max(S[i, j] - K, 0) if optype == 'c' else max(K - S[i, j], 0)
+        
+        # Check early exercise condition (for American options)
+            if i < N:
+            # If Option Value equals Intrinsic Value and Intrinsic > 0, early exercise is optimal
+                        exercise_str = "Exercise Early" if (C[i, j] == intrinsic_val and intrinsic_val > 0) else "Hold"
+            else:
+                 exercise_str = "Expiration"
+
+        # Rich Tooltip Construction
+        hover_text = (
+            f"<b>Node (Step {i}, Up {j})</b><br>"
+            f"───────────────────<br>"
+            f"Stock Price ($S$): <b>${S[i, j]:.2f}</b><br>"
+            f"Option Value ($C$): <b>${C[i, j]:.2f}</b><br>"
+            f"Intrinsic Payoff: <b>${intrinsic_val:.2f}</b><br>"
+            f"Decision State: <b>{exercise_str}</b>"
+        )
+        node_hover.append(hover_text)
 
     tree.add_trace(go.Scatter(
         x=x_nodes,
