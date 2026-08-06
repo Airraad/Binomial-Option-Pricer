@@ -23,12 +23,12 @@ def binomial_lattice (K,T,S0,r,N,sd,optype):
     df= np.exp(-r*dt)
 
     #stock prices at maturity
-    S = np.zeros(N+1, N+1)
+    S = np.zeros((N+1, N+1))
     for j in range(0,N+1):
         S[N,j] = S0 * (u**j) * d**(N-j)
 
     # option payoffs
-    C = np.zeros(N+1,N+1)
+    C = np.zeros((N+1,N+1))
     for j in range(0,N+1):
         if optype == 'p':
             C[N, j] = max(0, K-S[N,j])
