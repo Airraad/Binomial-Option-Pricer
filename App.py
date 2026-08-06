@@ -145,7 +145,7 @@ with tab1:
                 hoverinfo='none'
             ))
     
-    x_nodes, y_nodes, node_text, node_labels = [], [], [], []
+    x_nodes, y_nodes, node_hover, node_labels = [], [], [], []
     for i in range(N+1):
         for j in range(i+1):
             x_nodes.append(i)
