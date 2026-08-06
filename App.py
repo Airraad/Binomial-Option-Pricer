@@ -116,11 +116,11 @@ st.caption(f" Difference: {abs(binomial_price - bs_price):.4f}")
 #greeks boxes
 st.divider()
 g1, g2, g3, g4, g5 = st.columns(5)
-g1.metric("Delta", f"{greek_vals['delta']:.4f}")
-g2.metric("Gamma", f"{greek_vals['gamma']:.4f}")
-g3.metric("vega", f"{greek_vals['vega']:.4f}")
-g4.metric("Theta", f"{greek_vals['theta']:.4f}")
-g5.metric("Rho", f"{greek_vals['rho']:.4f}")
+g1.metric("Delta", f"{greeks['delta']:.4f}")
+g2.metric("Gamma", f"{greeks['gamma']:.4f}")
+g3.metric("vega", f"{greeks['vega']:.4f}")
+g4.metric("Theta", f"{greeks['theta']:.4f}")
+g5.metric("Rho", f"{greeks['rho']:.4f}")
 
 st.devider()
 
