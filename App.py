@@ -176,33 +176,38 @@ with tab1:
 
     #convergence graph
 with tab2:
-    st.write("Observation: As the number of steps increases, the Binoial Option Price converges towards the continuous Black Scholes Price.")
+    st.write("Observation: As the number of steps ($N$) increases, the discrete Binomial Option Price converges toward the continuous Black-Scholes price.")
 
     step_range = list(range(1, 101))
-    binomial_prices = [binomial_lattice(K,T,S0,r,step,sd,optype)[0] for step in step_range]
+    binomial_prices = [binomial_lattice(K, T, S0, r, step, sd, optype)[0] for step in step_range]
 
-    conv=go.Figure()
+    conv = go.Figure()
+    
+    #binomial line
     conv.add_trace(go.Scatter(
-        x=step_range, y=binomial_prices,
-        mode='lines+markers', name='Binomial Price',
-        line=dict(color='2B6621', width = 2)
-
+        x=step_range, 
+        y=binomial_prices,
+        mode='lines+markers', 
+        name='Binomial Price',
+        line=dict(color='#2ca02c', width=2)
     ))
+    
+    #Black Scholes benchmark line
     conv.add_trace(go.Scatter(
-        x=[1, 100], y=[bs_price, bs_price],
-        mode = 'lines', name = 'Black Scholes Benchmark',
-        line = dict(color = 'red', dash = 'dash', width = 2)
-
+        x=[1, 100], 
+        y=[bs_price, bs_price],
+        mode='lines', 
+        name='Black-Scholes Benchmark',
+        line=dict(color='red', dash='dash', width=2)
     ))
 
     conv.update_layout(
-        title = "Binomial Model Convergence",
-        xaxis_title = "Number of Steps",
-        yaxis_title = "Option Price",
-        height = 450,
-        legend = dict(x=0.7, y = 0.1)
+        title="Binomial Model Convergence to Black-Scholes Price",
+        xaxis_title="Number of Steps (N)",
+        yaxis_title="Option Price ($)",
+        height=450,
+        legend=dict(x=0.7, y=0.1)
     )
-    st.plotly_chart(conv,  use_container_width=True)
-                    
+    st.plotly_chart(conv, use_container_width=True)
 
             
