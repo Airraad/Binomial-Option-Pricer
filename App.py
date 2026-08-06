@@ -150,7 +150,7 @@ with tab1:
         for j in range(i+1):
             x_nodes.append(i)
             y_nodes.append(j)
-            node_labels.append(f"$S[i,j]:.1f}")
+            node_labels.append(f"$S[i,j]:.1f")
             node_text.append(f"<b>Step {i}</b><br>Stock: ${S[i, j]:.2f}<br>Option:${C[i, j]:.2f}")
 
     tree.add_trace(go.Scatter(
