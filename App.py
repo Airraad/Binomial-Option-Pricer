@@ -122,7 +122,7 @@ g3.metric("vega", f"{greek_values['vega']:.4f}")
 g4.metric("Theta", f"{greek_values['theta']:.4f}")
 g5.metric("Rho", f"{greek_values['rho']:.4f}")
 
-st.devider()
+st.divider()
 
 #interactive tabs for graphics
 tab1, tab2 = st.tabs(["Binomial Lattice Graphic", "Black-Scholes Convergence Plot"])
