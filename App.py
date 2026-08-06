@@ -167,7 +167,7 @@ with tab1:
 
     tree.update_layout(
         title = "Binomial Price Tree Lattice",
-        xaxis = dict(title+"Time Step", tickmode='linear', dtick=1),
+        xaxis = dict(title="Time Step", tickmode='linear', dtick=1),
         yaxis=dict(showticklabels = False),
         height = 500,
         margin = dict(l=20, r=20, t=40, b=20)
