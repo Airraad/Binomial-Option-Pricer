@@ -201,7 +201,7 @@ with tab1:
         xaxis=dict(title="Time Step", tickmode='linear', dtick=1, showgrid=False),
         yaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
         height=500,
-        margin=dict(l=20, r=20, t=40, b=20)
+        margin=dict(l=20, r=20, t=40, b=20),
         hoverlabel=dict(
             bgcolor="#1f2937",
             font_color="#ffffff",
