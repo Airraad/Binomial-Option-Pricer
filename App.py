@@ -182,7 +182,7 @@ with tab1:
                 f"Decision State: <b>{exercise_str}</b>"
             )
             node_hover.append(hover_text)
-
+    marker_size = max(12, 30-N)
     tree.add_trace(go.Scatter(
         x=x_nodes,
         y=y_nodes,
@@ -202,7 +202,15 @@ with tab1:
         yaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
         height=500,
         margin=dict(l=20, r=20, t=40, b=20)
+        hoverlabel=dict(
+            bgcolor="#1f2937",
+            font_color="#ffffff",
+            font_size=13,
+            bordercolor="#4b5563"
     )
+)
+        
+    
     st.plotly_chart(tree, use_container_width=True)
 
 # TAB 2: CONVERGENCE GRAPH
@@ -240,6 +248,12 @@ with tab2:
         xaxis_title="Number of Steps (N)",
         yaxis_title="Option Price ($)",
         height=450,
-        legend=dict(x=0.7, y=0.1)
+        legend=dict(x=0.7, y=0.1),
+        hoverlabel=dict(
+            bgcolor="#1f2937",
+            font_color="#ffffff",
+            font_size=13,
+            bordercolor="#4b5563"
+        )
     )
     st.plotly_chart(conv, use_container_width=True)
