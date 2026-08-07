@@ -98,6 +98,7 @@ N = st.sidebar.number_input("Amount of Steps", value=5, step=1)
 
 optype_str = st.sidebar.selectbox("Option Type", ["Call", "Put"])
 
+
 if optype_str.lower() == "call":
     optype = 'c'
 else:
@@ -138,23 +139,31 @@ with tab1:
         for j in range(i + 1):
             y_curr = j - i / 2.0
             
-            # Up-move line
+            
             y_up = (j + 1) - (i + 1) / 2.0
             tree.add_trace(go.Scatter(
-                x=[i, i + 1], y=[y_curr, y_up],
-                mode='lines', line=dict(color='gray', width=1),
-                showlegend=False, hoverinfo='none'
+                x=[i, i + 1],
+                y=[y_curr, y_up],
+                mode='lines',
+                line=dict(color='gray',
+                width=1),
+                showlegend=False,
+                hoverinfo='none'
             ))
             
-            # Down-move line
+            
             y_down = j - (i + 1) / 2.0
             tree.add_trace(go.Scatter(
-                x=[i, i + 1], y=[y_curr, y_down],
-                mode='lines', line=dict(color='gray', width=1),
-                showlegend=False, hoverinfo='none'
+                x=[i, i + 1],
+                y=[y_curr, y_down],
+                mode='lines',
+                line=dict(color='gray',
+                width=1),
+                showlegend=False,
+                hoverinfo='none'
             ))
 
-    # 2. Add node markers with labels and hover tooltips
+    
     x_nodes, y_nodes, node_hover, node_labels = [], [], [], []
 
     for i in range(N + 1):
@@ -164,9 +173,10 @@ with tab1:
             node_labels.append(f"${S[i, j]:.1f}")
         
             # Calculate intrinsic value at this node
-            intrinsic_val = max(S[i, j] - K, 0) if optype == 'c' else max(K - S[i, j], 0)
-        
-            # Check early exercise condition (for American options)
+            if optype == 'c'
+                intrinsic_val = max(S[i, j] - K, 0)   
+            else:
+                max(K - S[i, j], 0)
             if i < N:
                 exercise_str = "Exercise Early" if (C[i, j] == intrinsic_val and intrinsic_val > 0) else "Hold"
             else:
@@ -175,7 +185,6 @@ with tab1:
             # Rich Tooltip Construction
             hover_text = (
                 f"<b>Node (Step {i}, Up {j})</b><br>"
-                f"───────────────────<br>"
                 f"Stock Price ($S$): <b>${S[i, j]:.2f}</b><br>"
                 f"Option Value ($C$): <b>${C[i, j]:.2f}</b><br>"
                 f"Intrinsic Payoff: <b>${intrinsic_val:.2f}</b><br>"
