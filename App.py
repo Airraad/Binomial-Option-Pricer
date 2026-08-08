@@ -187,8 +187,8 @@ with tab1:
             
             if i == N:
                 exercise_str = "Expiration"
-            elif opstyle == 'amer':
-                exercise_str = "Exercise Early" if (C[i, j] == intrinsic_val and intrinsic_val > 0) 
+            elif opstyle == 'amer' and C[i, j] == intrinsic_val and intrinsic_val > 0:
+                exercise_str = "Exercise Early" 
             elif opstyle == 'eur':
                 exercise_str = "Hold (European)"
             else:
