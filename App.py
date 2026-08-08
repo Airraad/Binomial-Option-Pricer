@@ -97,7 +97,7 @@ r = st.sidebar.number_input("Risk Free Rate (r)", value=0.08, step=0.01)
 N = st.sidebar.number_input("Amount of Steps", value=5, step=1)
 
 optype_str = st.sidebar.selectbox("Option Type", ["Call", "Put"])
-opstyle_str = st.sidebar.selectbox("Option Style", ["American", "Eurpoean"])
+opstyle_str = st.sidebar.selectbox("Option Style", ["American", "European"])
 
 
 if optype_str.lower() == "call":
@@ -107,7 +107,7 @@ else:
 
 if opstyle_str.lower() == "American":
     opstyle = 'amer'
-else:
+elif opstyle_str.lower() == "European":
     opstyle = 'eur'
 st.subheader(f"Option Style: {opstyle}")
 
