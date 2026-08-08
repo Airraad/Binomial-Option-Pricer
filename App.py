@@ -187,8 +187,10 @@ with tab1:
             
             if i == N:
                 exercise_str = "Expiration"
-            elif opstyle == 'amer'
+            elif opstyle == 'amer':
                 exercise_str = "Exercise Early" if (C[i, j] == intrinsic_val and intrinsic_val > 0) else "Hold"
+            else:
+                exercise_str = "Hold (European)"
 
             # Rich Tooltip Construction
             hover_text = (
