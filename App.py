@@ -97,7 +97,7 @@ r = st.sidebar.number_input("Risk Free Rate (r)", value=0.08, step=0.01)
 N = st.sidebar.number_input("Amount of Steps", value=5, step=1)
 
 optype_str = st.sidebar.selectbox("Option Type", ["Call", "Put"])
-opstyle_str = st.sidebar.selectbox("Option Style", ["American", "Eurpoean"])
+opstyle_str = st.sidebar.radio("Option Style", ["American", "Eurpoean"])
 
 
 if optype_str.lower() == "call":
@@ -188,10 +188,11 @@ with tab1:
             if i == N:
                 exercise_str = "Expiration"
             elif opstyle == 'amer':
-                exercise_str = "Exercise Early" if (C[i, j] == intrinsic_val and intrinsic_val > 0) else "Hold"
-            else:
+                exercise_str = "Exercise Early" if (C[i, j] == intrinsic_val and intrinsic_val > 0) 
+            elif opstyle == 'eur':
                 exercise_str = "Hold (European)"
-
+            else:
+                exercise_str = "Hold"
             # Rich Tooltip Construction
             hover_text = (
                 f"<b>Node (Step {i}, Up {j})</b><br>"
