@@ -93,7 +93,7 @@ S0 = st.sidebar.number_input("Stock Price (S0)", value=105.0, step=1.0)
 K = st.sidebar.number_input("Strike Price (K)", value=100.0, step=1.0)
 T = st.sidebar.number_input("Price to Maturity (T)", value=0.5, step=0.1)                             
 sd = st.sidebar.number_input("Volatility (Standard Deviation)", value=0.25, step=0.01)
-r = st.sidebar.number_input("Risk Free Rate (r)", value=0.08, step=0.005)
+r = st.sidebar.number_input("Risk Free Rate (r)", value=0.08, step=0.01)
 N = st.sidebar.number_input("Amount of Steps", value=5, step=1)
 
 optype_str = st.sidebar.selectbox("Option Type", ["Call", "Put"])
@@ -173,7 +173,7 @@ with tab1:
             node_labels.append(f"${S[i, j]:.1f}")
         
             # Calculate intrinsic value at this node
-            if optype == 'c'
+            if optype == 'c':
                 intrinsic_val = max(S[i, j] - K, 0)   
             else:
                 max(K - S[i, j], 0)
