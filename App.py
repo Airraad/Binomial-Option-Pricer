@@ -105,9 +105,9 @@ if optype_str.lower() == "call":
 else:
     optype = 'p'
 
-if opstyle_str.lower() == "American":
+if opstyle_str.lower() == "american":
     opstyle = 'amer'
-elif opstyle_str.lower() == "European":
+elif opstyle_str.lower() == "european":
     opstyle = 'eur'
 st.subheader(f"Option Style: {opstyle}")
 
