@@ -40,9 +40,9 @@ def binomial_lattice(K, T, S0, r, N, sd, optype):
             S[i, j] = S0 * (u**j) * (d**(i - j))
 
             hold = df * (q * C[i + 1, j + 1] + (1 - q) * C[i + 1, j])
-            if optype == 'p':
+            if optype == 'p' and opstyle == 'amer': 
                 C[i, j] = max(hold, K - S[i, j])
-            else:
+            elif opstyle == 'eur':
                 C[i, j] = max(hold, S[i, j] - K)
             
     return C[0, 0], S, C
@@ -97,12 +97,18 @@ r = st.sidebar.number_input("Risk Free Rate (r)", value=0.08, step=0.01)
 N = st.sidebar.number_input("Amount of Steps", value=5, step=1)
 
 optype_str = st.sidebar.selectbox("Option Type", ["Call", "Put"])
+opstyle_str = st.sidebar.selectbox("Option Style", ["American", "Eurpoean"])
 
 
 if optype_str.lower() == "call":
     optype = 'c'
 else:
     optype = 'p'
+
+if opstyle_str.lower() == "American":
+    opstyle = 'amer'
+else:
+    opstyle = 'eur'
 
 binomial_price, S, C = binomial_lattice(K, T, S0, r, N, sd, optype)
 bs_price = blacks_price(S0, K, T, r, sd, optype)
@@ -165,22 +171,24 @@ with tab1:
 
     
     x_nodes, y_nodes, node_hover, node_labels = [], [], [], []
-
+#node placement and labels, nested loop allow to iterate through steps and time.
     for i in range(N + 1):
         for j in range(i + 1):
             x_nodes.append(i)
             y_nodes.append(j - i / 2.0)
+            #node labels format the price at that node
             node_labels.append(f"${S[i, j]:.1f}")
         
-            # Calculate intrinsic value at this node
+            # Calculate intrinsic value at this node, calculating immediate payoff if exercised at this time.
             if optype == 'c':
                 intrinsic_val = max(S[i, j] - K, 0)   
             else:
-                max(K - S[i, j], 0)
-            if i < N:
-                exercise_str = "Exercise Early" if (C[i, j] == intrinsic_val and intrinsic_val > 0) else "Hold"
-            else:
+                intrinsic_val = max(K - S[i, j], 0)
+            
+            if i == N:
                 exercise_str = "Expiration"
+            elif opstyle == 'amer'
+                exercise_str = "Exercise Early" if (C[i, j] == intrinsic_val and intrinsic_val > 0) else "Hold"
 
             # Rich Tooltip Construction
             hover_text = (
