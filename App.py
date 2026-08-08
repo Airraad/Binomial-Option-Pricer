@@ -97,7 +97,7 @@ r = st.sidebar.number_input("Risk Free Rate (r)", value=0.08, step=0.01)
 N = st.sidebar.number_input("Amount of Steps", value=5, step=1)
 
 optype_str = st.sidebar.selectbox("Option Type", ["Call", "Put"])
-opstyle_str = st.sidebar.radio("Option Style", ["American", "Eurpoean"])
+opstyle_str = st.sidebar.selectbox("Option Style", ["American", "Eurpoean"])
 
 
 if optype_str.lower() == "call":
@@ -109,6 +109,7 @@ if opstyle_str.lower() == "American":
     opstyle = 'amer'
 else:
     opstyle = 'eur'
+st.subheader(f"Option Style: {opstyle}")
 
 binomial_price, S, C = binomial_lattice(K, T, S0, r, N, sd, optype)
 bs_price = blacks_price(S0, K, T, r, sd, optype)
