@@ -45,7 +45,7 @@ def binomial_lattice(K, T, S0, r, N, sd, optype):
             elif opstyle == 'eur':
                 C[i, j] = max(hold, S[i, j] - K)
             
-    return {C[0, 0], S, C,}
+    return C[0, 0], S, C,
 
 
 def blacks_price(S0, K, T, r, sd, optype):
