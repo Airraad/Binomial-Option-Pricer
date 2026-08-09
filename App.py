@@ -10,7 +10,7 @@ st.title("Interactive Binomial Option Pricing and Risk Dashboard")
 st.markdown("Price European and American options using the Cox-Ross-Rubinstein (CRR) model and compute Black-Scholes")
 
 # Pricing and greeks
-def binomial_lattice(K, T, S0, r, N, sd, optype):
+def binomial_lattice(K, T, S0, r, N, sd, optype, opstyle):
     dt = T / N
     
     # compute u and d
@@ -42,7 +42,7 @@ def binomial_lattice(K, T, S0, r, N, sd, optype):
             hold = df * (q * C[i + 1, j + 1] + (1 - q) * C[i + 1, j])
             if optype == 'p' and opstyle == 'amer': 
                 C[i, j] = max(hold, K - S[i, j])
-            elif opstyle == 'eur':
+            else:
                 C[i, j] = max(hold, S[i, j] - K)
             
     return C[0, 0], S, C,
@@ -110,7 +110,7 @@ elif opstyle_str.lower() == "european":
 
 
 binomial_price, S, C = binomial_lattice(K, T, S0, r, N, sd, optype)
-bs_price = blacks_price(S0, K, T, r, sd, optype)
+bs_price = blacks_price(S0, K, T, r, sd, optype, opstyle)
 greek_values = greeks(S0, K, T, r, sd, optype)
 
 # main panel
@@ -240,7 +240,7 @@ with tab2:
         st.info("For American Put options, early exercise premium causes the Binomial tree price to converge slightly above the European Black Scholes line.")
     
     step_range = list(range(1, 101))
-    binomial_prices = [binomial_lattice(K, T, S0, r, step, sd, optype)[0] for step in step_range]
+    binomial_prices = [binomial_lattice(K, T, S0, r, step, sd, optype, opstyle)[0] for step in step_range]
 
     conv = go.Figure()
     
