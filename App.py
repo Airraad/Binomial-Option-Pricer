@@ -169,18 +169,6 @@ if submitted or st.session_state["has_run"]:
             
                 # intrinsic valuation
                 intrinsic_val = max(S[i, j] - K, 0) if optype == 'c' else max(K - S[i, j], 0)
-                
-                # discount factors
-                step_df = df                          # e^-r*dt for single step
-                total_df = np.exp(-r * (i * dt))      # cumulative discount back to t=0
-                
-                # calculate expected payoff next step if not at boundary
-                if i < N:
-                    expected_payoff = q * C[i + 1, j + 1] + (1 - q) * C[i + 1, j]
-                    discounted_payoff = step_df * expected_payoff
-                else:
-                    expected_payoff = intrinsic_val
-                    discounted_payoff = intrinsic_val
 
                 # non-chalant lowercase decision logic & notes
                 if i == N:
@@ -201,13 +189,6 @@ if submitted or st.session_state["has_run"]:
                     f"─────────────────────────────<br>"
                     f"stock price ($S$): <b>${S[i, j]:.2f}</b><br>"
                     f"option value ($C$): <b>${C[i, j]:.2f}</b><br>"
-                    f"up factor ($u$): <b>{u:.4f}</b><br>"
-                    f"down factor ($d$): <b>{d:.4f}</b><br>"
-                    f"rn probability ($p$): <b>{q:.4f}</b><br>"
-                    f"step discount factor ($e^{{-r\\cdot dt}}$): <b>{step_df:.4f}</b><br>"
-                    f"total discount factor ($e^{{-r\\cdot t}}$): <b>{total_df:.4f}</b><br>"
-                    f"expected next payoff: <b>${expected_payoff:.2f}</b><br>"
-                    f"discounted continuation: <b>${discounted_payoff:.2f}</b><br>"
                     f"intrinsic payoff: <b>${intrinsic_val:.2f}</b><br>"
                     f"decision state: <b>{exercise_str}</b><br>"
                     f"<i>note: {note_str}</i>"
@@ -242,6 +223,19 @@ if submitted or st.session_state["has_run"]:
             )
         )
         st.plotly_chart(tree, use_container_width=True)
+
+        # Separate metric section below graph
+        st.divider()
+        st.markdown("### Model & Node Parameters")
+        st.caption("step size, transition multipliers, risk-neutral probabilities, and discount factors for the tree")
+        
+        m1, m2, m3, m4, m5 = st.columns(5)
+        m1.metric("Time Step (dt)", f"{dt:.4f} yrs")
+        m2.metric("Up Factor (u)", f"{u:.4f}")
+        m3.metric("Down Factor (d)", f"{d:.4f}")
+        m4.metric("RN Prob (p)", f"{q:.4f}")
+        m5.metric("Step Discount (df)", f"{df:.4f}")
+        st.divider()
 
     # TAB 2: CONVERGENCE GRAPH
     with tab2:
