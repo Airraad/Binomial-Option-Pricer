@@ -40,7 +40,7 @@ How to Run Locally
 
 In bash paste:
 
-  git clone [https://github.com/YOUR_USERNAME/binomial-option-pricer.git](https://github.com/airraad/binomial-option-pricer.git)
+  git clone (https://github.com/airraad/binomial-option-pricer.git)
   cd binomial-option-pricer
 
 2. Install dependencies in bash
