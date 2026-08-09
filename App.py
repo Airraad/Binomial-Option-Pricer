@@ -101,10 +101,13 @@ opstyle_str = st.sidebar.selectbox("Option Style", ["American", "European"])
 optype = 'c' if optype_str.lower() == "call" else 'p'
 opstyle = 'amer' if opstyle_str.lower() == "american" else 'eur'
 
-binomial_price, S, C = binomial_lattice(K, T, S0, r, N, sd, optype, opstyle)
-bs_price = blacks_price(S0, K, T, r, sd, optype)
-greek_values = greeks(S0, K, T, r, sd, optype)
+calculate_button = st.sidebar.button("Price Option", type="primary")
 
+#only run calculations and render dashboard when button is clicked
+if calculate_button:
+    binomial_price, S, C = binomial_lattice(K, T, S0, r, N, sd, optype, opstyle)
+    bs_price = blacks_price(S0, K, T, r, sd, optype)
+    greek_values = greeks(S0, K, T, r, sd, optype)
 # main panel
 # prices
 st.subheader(f"Option price: {binomial_price:.4f}")
