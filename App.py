@@ -45,7 +45,7 @@ def binomial_lattice(K, T, S0, r, N, sd, optype):
             elif opstyle == 'eur':
                 C[i, j] = max(hold, S[i, j] - K)
             
-    return C[0, 0], S, C
+    return {C[0, 0], S, C,}
 
 
 def blacks_price(S0, K, T, r, sd, optype):
@@ -60,24 +60,22 @@ def blacks_price(S0, K, T, r, sd, optype):
 
     
 def greeks(S0, K, T, r, sd, optype):
-    # Calculate d1 and d2
     d1 = (np.log(S0 / K) + (r + 0.5 * sd**2) * T) / (sd * np.sqrt(T))
     d2 = d1 - sd * np.sqrt(T)
 
     gamma = norm.pdf(d1) / (S0 * sd * np.sqrt(T))
-    vega = S0 * norm.pdf(d1) * np.sqrt(T)
+    vega = (S0 * norm.pdf(d1) * np.sqrt(T)) / 100.0  # scaled per 1% vol change
 
-    if optype in [0, 'p', 'put']:  # PUT Option
+    if optype == 'p':  # put Option
         delta = norm.cdf(d1) - 1.0
         theta = (- (S0 * norm.pdf(d1) * sd) / (2 * np.sqrt(T)) 
                  + r * K * np.exp(-r * T) * norm.cdf(-d2))
-        rho = -K * T * np.exp(-r * T) * norm.cdf(-d2)
-        
-    else:  # CALL Option
+        rho = (-K * T * np.exp(-r * T) * norm.cdf(-d2)) / 100.0  # scaled per 1% rate change
+    else:  # call Option
         delta = norm.cdf(d1)
         theta = (- (S0 * norm.pdf(d1) * sd) / (2 * np.sqrt(T)) 
                  - r * K * np.exp(-r * T) * norm.cdf(d2))
-        rho = K * T * np.exp(-r * T) * norm.cdf(d2)
+        rho = (K * T * np.exp(-r * T) * norm.cdf(d2)) / 100.0
 
     return {
         'delta': delta,
@@ -109,7 +107,7 @@ if opstyle_str.lower() == "american":
     opstyle = 'amer'
 elif opstyle_str.lower() == "european":
     opstyle = 'eur'
-st.subheader(f"Option Style: {opstyle}")
+
 
 binomial_price, S, C = binomial_lattice(K, T, S0, r, N, sd, optype)
 bs_price = blacks_price(S0, K, T, r, sd, optype)
@@ -278,3 +276,12 @@ with tab2:
         )
     )
     st.plotly_chart(conv, use_container_width=True)
+st.divider()
+m1, m2, m3, m4, m5 = st.columns(5)
+m1.metric("Delta", f"{greek_values['delta']:.4f}")
+m2.metric("Gamma", f"{greek_values['gamma']:.4f}")
+m3.metric("Vega", f"{greek_values['vega']:.4f}")
+m4.metric("Theta", f"{greek_values['theta']:.4f}")
+m5.metric("Rho", f"{greek_values['rho']:.4f}")
+
+st.divider()
