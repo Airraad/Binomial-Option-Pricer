@@ -87,7 +87,145 @@ def greeks(S0, K, T, r, sd, optype):
     }
 
 
-# Sidebar inputs
-S0 = st.sidebar.number_input("Stock Price (S0)", value=90.0, step=1.0)
-K = st.sidebar.number_input("Strike Price (K)", value=100.0, step=1.0)
-T = st.sidebar.number_
+# Form container in sidebar
+with st.sidebar.form("pricer_form"):
+    st.subheader("Model Inputs")
+    S0 = st.number_input("Stock Price (S0)", value=90.0, step=1.0)
+    K = st.number_input("Strike Price (K)", value=100.0, step=1.0)
+    T = st.number_input("Price to Maturity (T)", value=0.5, step=0.1)                             
+    sd = st.number_input("Volatility (Standard Deviation)", value=0.20, step=0.01)
+    r = st.number_input("Risk Free Rate (r)", value=0.05, step=0.01)
+    N = st.number_input("Amount of Steps", value=5, step=1)
+
+    optype_str = st.selectbox("Option Type", ["Put", "Call"])
+    opstyle_str = st.selectbox("Option Style", ["American", "European"])
+
+    optype = 'c' if optype_str.lower() == "call" else 'p'
+    opstyle = 'amer' if opstyle_str.lower() == "american" else 'eur'
+
+    submitted = st.form_submit_button("Price Option", type="primary")
+
+# Initialize session state flag
+if "has_run" not in st.session_state:
+    st.session_state["has_run"] = True
+
+# Execute main calculations
+if submitted or st.session_state["has_run"]:
+    binomial_price, S, C, u, d, q, df, dt = binomial_lattice(K, T, S0, r, N, sd, optype, opstyle)
+    bs_price = blacks_price(S0, K, T, r, sd, optype)
+    greek_values = greeks(S0, K, T, r, sd, optype)
+
+    # main panel - prices
+    st.subheader(f"Option price: ${binomial_price:.4f}")
+    st.caption(f"Theoretical Black-Scholes Price: ${bs_price:.4f}")
+    st.caption(f"Difference: ${abs(binomial_price - bs_price):.4f}")
+
+    # greeks boxes
+    st.divider()
+    g1, g2, g3, g4, g5 = st.columns(5)
+    g1.metric("Delta", f"{greek_values['delta']:.4f}")
+    g2.metric("Gamma", f"{greek_values['gamma']:.4f}")
+    g3.metric("Vega", f"{greek_values['vega']:.4f}")
+    g4.metric("Theta", f"{greek_values['theta']:.4f}")
+    g5.metric("Rho", f"{greek_values['rho']:.4f}")
+
+    st.divider()
+
+    # interactive tabs for graphics
+    tab1, tab2 = st.tabs(["Binomial Lattice Graphic", "Black-Scholes Convergence Plot"])
+
+    # TAB 1: BINOMIAL LATTICE GRAPHIC
+    with tab1:
+        st.write("Hover over any node to view node stats and exercise logic.")
+        
+        tree = go.Figure()
+
+        # 1. Draw connecting lines between adjacent nodes
+        for i in range(N):
+            for j in range(i + 1):
+                y_curr = j - i / 2.0
+                
+                y_up = (j + 1) - (i + 1) / 2.0
+                tree.add_trace(go.Scatter(
+                    x=[i, i + 1], y=[y_curr, y_up],
+                    mode='lines', line=dict(color='gray', width=1),
+                    showlegend=False, hoverinfo='none'
+                ))
+                
+                y_down = j - (i + 1) / 2.0
+                tree.add_trace(go.Scatter(
+                    x=[i, i + 1], y=[y_curr, y_down],
+                    mode='lines', line=dict(color='gray', width=1),
+                    showlegend=False, hoverinfo='none'
+                ))
+
+        x_nodes, y_nodes, node_hover, node_labels = [], [], [], []
+
+        for i in range(N + 1):
+            for j in range(i + 1):
+                x_nodes.append(i)
+                y_nodes.append(j - i / 2.0)
+                node_labels.append(f"${S[i, j]:.1f}" if N <= 10 else "")
+            
+                # intrinsic valuation
+                intrinsic_val = max(S[i, j] - K, 0) if optype == 'c' else max(K - S[i, j], 0)
+                
+                # discount factors
+                step_df = df                          # e^-r*dt for single step
+                total_df = np.exp(-r * (i * dt))      # cumulative discount back to t=0
+                
+                # calculate expected payoff next step if not at boundary
+                if i < N:
+                    expected_payoff = q * C[i + 1, j + 1] + (1 - q) * C[i + 1, j]
+                    discounted_payoff = step_df * expected_payoff
+                else:
+                    expected_payoff = intrinsic_val
+                    discounted_payoff = intrinsic_val
+
+                # non-chalant lowercase decision logic & notes
+                if i == N:
+                    exercise_str = "expiration boundary"
+                    note_str = "final node, just payoff at maturity"
+                elif opstyle == 'amer' and C[i, j] == intrinsic_val and intrinsic_val > 0:
+                    exercise_str = "exercise early"
+                    note_str = "intrinsic beats holding, exercise here"
+                elif opstyle == 'eur':
+                    exercise_str = "hold (european)"
+                    note_str = "can't exercise early anyway, just holding"
+                else:
+                    exercise_str = "hold"
+                    note_str = "holding option has higher expected value"
+
+                hover_text = (
+                    f"<b>node step {i} | up state {j}</b><br>"
+                    f"─────────────────────────────<br>"
+                    f"stock price ($S$): <b>${S[i, j]:.2f}</b><br>"
+                    f"option value ($C$): <b>${C[i, j]:.2f}</b><br>"
+                    f"up factor ($u$): <b>{u:.4f}</b><br>"
+                    f"down factor ($d$): <b>{d:.4f}</b><br>"
+                    f"rn probability ($p$): <b>{q:.4f}</b><br>"
+                    f"step discount factor ($e^{{-r\\cdot dt}}$): <b>{step_df:.4f}</b><br>"
+                    f"total discount factor ($e^{{-r\\cdot t}}$): <b>{total_df:.4f}</b><br>"
+                    f"expected next payoff: <b>${expected_payoff:.2f}</b><br>"
+                    f"discounted continuation: <b>${discounted_payoff:.2f}</b><br>"
+                    f"intrinsic payoff: <b>${intrinsic_val:.2f}</b><br>"
+                    f"decision state: <b>{exercise_str}</b><br>"
+                    f"<i>note: {note_str}</i>"
+                )
+                node_hover.append(hover_text)
+
+        marker_size = max(12, 30 - N)
+        tree.add_trace(go.Scatter(
+            x=x_nodes,
+            y=y_nodes,
+            mode='markers+text' if N <= 10 else 'markers',
+            marker=dict(size=marker_size, color='#1f77b4'),
+            text=node_labels,
+            textposition="middle center",
+            textfont=dict(color="white", size=max(7, 10 - N // 3)),
+            hoverinfo='text',
+            hovertext=node_hover,
+            showlegend=False
+        ))
+
+        tree.
