@@ -228,4 +228,60 @@ if submitted or st.session_state["has_run"]:
             showlegend=False
         ))
 
-        tree.
+        tree.update_layout(
+            title="Binomial Price Tree Lattice",
+            xaxis=dict(title="Time Step", tickmode='linear', dtick=1, showgrid=False),
+            yaxis=dict(showticklabels=False, showgrid=False, zeroline=False),
+            height=500,
+            margin=dict(l=20, r=20, t=40, b=20),
+            hoverlabel=dict(
+                bgcolor="#1f2937",
+                font_color="#ffffff",
+                font_size=12,
+                bordercolor="#4b5563"
+            )
+        )
+        st.plotly_chart(tree, use_container_width=True)
+
+    # TAB 2: CONVERGENCE GRAPH
+    with tab2:
+        st.write("Observation: As the number of steps ($N$) increases, the discrete Binomial Option Price converges toward the continuous Black-Scholes price.")
+
+        if optype == 'p' and opstyle == 'amer':
+            st.info("For American Put options, early exercise premium causes the Binomial tree price to converge slightly above the European Black Scholes line.")
+        
+        step_range = list(range(1, 101))
+        binomial_prices = [binomial_lattice(K, T, S0, r, step, sd, optype, opstyle)[0] for step in step_range]
+
+        conv = go.Figure()
+        
+        conv.add_trace(go.Scatter(
+            x=step_range, 
+            y=binomial_prices,
+            mode='lines+markers', 
+            name='Binomial Price',
+            line=dict(color='#2ca02c', width=2)
+        ))
+        
+        conv.add_trace(go.Scatter(
+            x=[1, 100], 
+            y=[bs_price, bs_price],
+            mode='lines', 
+            name='Black-Scholes Benchmark',
+            line=dict(color='red', dash='dash', width=2)
+        ))
+
+        conv.update_layout(
+            title="Binomial Model Convergence to Black-Scholes Price",
+            xaxis_title="Number of Steps (N)",
+            yaxis_title="Option Price ($)",
+            height=450,
+            legend=dict(x=0.7, y=0.1),
+            hoverlabel=dict(
+                bgcolor="#1f2937",
+                font_color="#ffffff",
+                font_size=12,
+                bordercolor="#4b5563"
+            )
+        )
+        st.plotly_chart(conv, use_container_width=True)
