@@ -173,25 +173,23 @@ if submitted or st.session_state["has_run"]:
                 # non-chalant lowercase decision logic & notes
                 if i == N:
                     exercise_str = "expiration boundary"
-                    note_str = "final node, just payoff at maturity"
+                    
                 elif opstyle == 'amer' and C[i, j] == intrinsic_val and intrinsic_val > 0:
                     exercise_str = "exercise early"
-                    note_str = "intrinsic beats holding, exercise here"
+                    
                 elif opstyle == 'eur':
                     exercise_str = "hold (european)"
-                    note_str = "can't exercise early anyway, just holding"
+                    
                 else:
                     exercise_str = "hold"
-                    note_str = "holding option has higher expected value"
-
+                    
                 hover_text = (
                     f"<b>node step {i} | up state {j}</b><br>"
-                    f"─────────────────────────────<br>"
                     f"stock price ($S$): <b>${S[i, j]:.2f}</b><br>"
                     f"option value ($C$): <b>${C[i, j]:.2f}</b><br>"
                     f"intrinsic payoff: <b>${intrinsic_val:.2f}</b><br>"
                     f"decision state: <b>{exercise_str}</b><br>"
-                    f"<i>note: {note_str}</i>"
+                    
                 )
                 node_hover.append(hover_text)
 
