@@ -69,13 +69,13 @@ def greeks(S0, K, T, r, sd, optype):
 
     if optype == 'p':  # Put Option
         delta = norm.cdf(d1) - 1.0
-        theta = (- (S0 * norm.pdf(d1) * sd) / (2 * np.sqrt(T)) 
-                 + r * K * np.exp(-r * T) * norm.cdf(-d2))
+        theta = ((- (S0 * norm.pdf(d1) * sd) / (2 * np.sqrt(T)) 
+                 + r * K * np.exp(-r * T) * norm.cdf(-d2)))/365.0
         rho = (-K * T * np.exp(-r * T) * norm.cdf(-d2)) / 100.0  # scaled per 1% rate change
     else:  # Call Option
         delta = norm.cdf(d1)
-        theta = (- (S0 * norm.pdf(d1) * sd) / (2 * np.sqrt(T)) 
-                 - r * K * np.exp(-r * T) * norm.cdf(d2))
+        theta = ((- (S0 * norm.pdf(d1) * sd) / (2 * np.sqrt(T)) 
+                 - r * K * np.exp(-r * T) * norm.cdf(d2)))/365.0
         rho = (K * T * np.exp(-r * T) * norm.cdf(d2)) / 100.0
 
     return {
