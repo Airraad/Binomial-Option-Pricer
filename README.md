@@ -33,8 +33,10 @@ Risk-Neutral Probability (p): p = (exp(r * dt) - d) / (u - d)
 Step Discount Factor (df): df = exp(-r * dt)
 
 
+Either check it out through this link--> https://binomial-option-pricer-7jfwmf58am5xxxawnpssig.streamlit.app/
 
-How to Run Locally
+
+Or Run Locally, 
 
 1. Clone the repository and navigate to the directory:
 
